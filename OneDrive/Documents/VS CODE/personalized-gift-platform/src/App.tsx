@@ -1,22 +1,33 @@
-import React, { useState } from 'react';
-import { Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
+import { useState } from 'react';
 import { 
-  Gift, Menu, X, Search, Sun, Moon, Heart, 
-  Home as HomeIcon, Gift as GiftIcon, 
-  Calendar, Bell, BookOpen, History 
+  Gift, 
+  Calendar, 
+  Home as HomeIcon, 
+  X, 
+  Menu, 
+  Search, 
+  Sun, 
+  Moon,
+  BookOpen 
 } from 'lucide-react';
-import Home from './pages/Home';
-import Login from './pages/Login';
-import Signup from './pages/Signup';
-import GiftFinder from './pages/GiftFinder';
+import { 
+  Routes, 
+  Route, 
+  Link, 
+  useLocation, 
+  useNavigate 
+} from 'react-router-dom';
 import Occasions from './pages/Occasions';
 import Recommendations from './pages/Recommendations';
 import Guides from './pages/Guides';
+import HomePage from './pages/Home';
+import Login from './pages/Login';
+import Signup from './pages/Signup';
+import GiftFinder from './pages/GiftFinder';
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
-  const [notifications, setNotifications] = useState(0);
   const location = useLocation();
   const navigate = useNavigate();
   const isNotHomePage = location.pathname !== '/';
@@ -38,7 +49,7 @@ function App() {
           onClick={() => navigate('/recommendations')}
           className="bg-secondary-600 hover:bg-secondary-700 text-white p-3 rounded-full shadow-soft transition-all duration-300 hover:scale-110 group relative"
         >
-          <GiftIcon className="h-6 w-6" />
+          <Gift className="h-6 w-6" />
           <span className="absolute left-full ml-2 bg-gray-800 text-white px-2 py-1 rounded text-sm opacity-0 group-hover:opacity-100 whitespace-nowrap">
             Gift Ideas
           </span>
@@ -135,7 +146,7 @@ function App() {
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/finder" element={<GiftFinder />} />
