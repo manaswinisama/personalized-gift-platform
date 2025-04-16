@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Gift, Search, Sparkles } from 'lucide-react';
+import { Gift, Search } from 'lucide-react';
 import { GiftFormData, GiftSuggestion } from '../types';
 import { generateExpandedSuggestions } from '../utils/giftUtils';
 
@@ -19,6 +19,7 @@ export default function GiftForm({ onSubmit, isLoading }: GiftFormProps) {
   });
 
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const ageRanges = ["13-17", "18-25", "26-35", "36-50", "51+"];
   const occasions = [
@@ -48,6 +49,7 @@ export default function GiftForm({ onSubmit, isLoading }: GiftFormProps) {
       ...prev,
       [name]: value
     }));
+    setErrors(prev => ({ ...prev, [name]: '' })); // Clear error on change
   };
 
   const toggleInterest = (interest: string) => {
@@ -65,14 +67,27 @@ export default function GiftForm({ onSubmit, isLoading }: GiftFormProps) {
     });
   };
 
+  const validateForm = () => {
+    const newErrors: { [key: string]: string } = {};
+    if (!formData.age) newErrors.age = 'Age range is required.';
+    if (!formData.gender) newErrors.gender = 'Gender is required.';
+    if (!formData.occasion) newErrors.occasion = 'Occasion is required.';
+    if (!formData.relation) newErrors.relation = 'Relationship is required.';
+    if (!formData.budget) newErrors.budget = 'Budget is required.';
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const suggestions = generateExpandedSuggestions(formData);
-    onSubmit(suggestions);
+    if (validateForm()) {
+      const suggestions = generateExpandedSuggestions(formData);
+      onSubmit(suggestions);
+    }
   };
 
   return (
-    <div className="bg-white rounded-xl shadow-xl p-8 sticky top-4">
+    <div className="bg-white rounded-xl shadow-xl p-8">
       <div className="flex items-center mb-6">
         <Gift className="w-8 h-8 text-purple-600 mr-3" />
         <h2 className="text-2xl font-bold text-gray-800">Gift Finder</h2>
@@ -85,7 +100,7 @@ export default function GiftForm({ onSubmit, isLoading }: GiftFormProps) {
             name="age"
             value={formData.age}
             onChange={handleInputChange}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+            className={`w-full px-4 py-3 border ${errors.age ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200`}
             required
           >
             <option value="">Select age range</option>
@@ -93,6 +108,7 @@ export default function GiftForm({ onSubmit, isLoading }: GiftFormProps) {
               <option key={range} value={range}>{range} years</option>
             ))}
           </select>
+          {errors.age && <p className="text-red-500 text-sm">{errors.age}</p>}
         </div>
 
         <div>
@@ -101,7 +117,7 @@ export default function GiftForm({ onSubmit, isLoading }: GiftFormProps) {
             name="gender"
             value={formData.gender}
             onChange={handleInputChange}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+            className={`w-full px-4 py-3 border ${errors.gender ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200`}
             required
           >
             <option value="">Select gender</option>
@@ -109,6 +125,7 @@ export default function GiftForm({ onSubmit, isLoading }: GiftFormProps) {
             <option value="female">Female</option>
             <option value="other">Other</option>
           </select>
+          {errors.gender && <p className="text-red-500 text-sm">{errors.gender}</p>}
         </div>
 
         <div>
@@ -117,7 +134,7 @@ export default function GiftForm({ onSubmit, isLoading }: GiftFormProps) {
             name="occasion"
             value={formData.occasion}
             onChange={handleInputChange}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+            className={`w-full px-4 py-3 border ${errors.occasion ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200`}
             required
           >
             <option value="">Select occasion</option>
@@ -125,6 +142,7 @@ export default function GiftForm({ onSubmit, isLoading }: GiftFormProps) {
               <option key={occasion} value={occasion}>{occasion}</option>
             ))}
           </select>
+          {errors.occasion && <p className="text-red-500 text-sm">{errors.occasion}</p>}
         </div>
 
         <div>
@@ -133,7 +151,7 @@ export default function GiftForm({ onSubmit, isLoading }: GiftFormProps) {
             name="relation"
             value={formData.relation}
             onChange={handleInputChange}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+            className={`w-full px-4 py-3 border ${errors.relation ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200`}
             required
           >
             <option value="">Select relationship</option>
@@ -141,6 +159,7 @@ export default function GiftForm({ onSubmit, isLoading }: GiftFormProps) {
               <option key={relation} value={relation}>{relation}</option>
             ))}
           </select>
+          {errors.relation && <p className="text-red-500 text-sm">{errors.relation}</p>}
         </div>
 
         <div>
@@ -169,7 +188,7 @@ export default function GiftForm({ onSubmit, isLoading }: GiftFormProps) {
             name="budget"
             value={formData.budget}
             onChange={handleInputChange}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200"
+            className={`w-full px-4 py-3 border ${errors.budget ? 'border-red-500' : 'border-gray-300'} rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200`}
             required
           >
             <option value="">Select budget</option>
@@ -177,6 +196,7 @@ export default function GiftForm({ onSubmit, isLoading }: GiftFormProps) {
               <option key={budget} value={budget}>Up to ${budget}</option>
             ))}
           </select>
+          {errors.budget && <p className="text-red-500 text-sm">{errors.budget}</p>}
         </div>
 
         <button
